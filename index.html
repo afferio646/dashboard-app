@@ -75,6 +75,15 @@
         .status-badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; }
         .status-high { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
         .status-low { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        /* NEW STYLE FOR ARCHIVE SCROLLING (REQUIRED FOR 500+ LEADS) */
+        .lead-archive-container {
+    max-height: 400px; /* Adjust this value as needed, e.g., 60vh */
+    overflow-y: auto;
+    border: 1px solid var(--border); /* Optional: Adds a visual border to the scroll area */
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+/* END NEW STYLE */
     </style>
 </head>
 <body>
@@ -132,10 +141,11 @@
                 
                 <div>
                     <div>
-    <div class="lead-archive" style="margin-bottom: 2rem;">
-        <h2>Lead Archive & Status (Total IDs: <span id="archiveTotal"></span>)</h2>
-        <p style="color: var(--text-secondary); font-size: 0.9rem;">Filter by activity or status here. (Implementation pending backend connection)</p>
-        
+   <div class="lead-archive" style="margin-bottom: 2rem;">
+    <h2>Lead Archive & Status (Total IDs: <span id="archiveTotal"></span>)</h2>
+    <p style="color: var(--text-secondary); font-size: 0.9rem;">Filter by activity or status here. (Implementation pending backend connection)</p>
+    
+    <div class="lead-archive-container">
         <table id="leadArchiveTable" style="margin-top: 1rem;">
             <thead>
                 <tr>
@@ -150,6 +160,7 @@
                 <tr><td colspan="5" style="text-align: center;">Full Lead List loads here once connected to the backend.</td></tr>
             </tbody>
         </table>
+    </div> 
     </div>
     <h2>Recent App Activity</h2> 
     <table>
@@ -157,21 +168,7 @@
             </tbody>
     </table>
 </div>
-                    <h2>Recent App Activity</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Timestamp</th>
-                                <th>Lead ID</th>
-                                <th>Activity Type</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="activityTableBody">
-                            </tbody>
-                    </table>
-                </div>
-
+             
                 <div class="sidebar-card">
                     <h2>Push Notification Composer</h2>
                     <p id="subscriberCountText" style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem;">Target: 0 Active Subscribers</p>
