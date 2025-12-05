@@ -137,70 +137,77 @@
                 </div>
             </div>
 
-            <div class="main-grid">
-                
-                <div>
-                    <div>
-   <div class="lead-archive" style="margin-bottom: 2rem;">
-    <h2>Lead Archive & Status (Total IDs: <span id="archiveTotal"></span>)</h2>
-    <p style="color: var(--text-secondary); font-size: 0.9rem;">Filter by activity or status here. (Implementation pending backend connection)</p>
-    
-    <div class="lead-archive-container">
-        <table id="leadArchiveTable" style="margin-top: 1rem;">
+<div class="main-grid">
+
+    <div>
+        
+        <div class="lead-archive" style="margin-bottom: 2rem;">
+            <h2>Lead Archive & Status (Total IDs: <span id="archiveTotal"></span>)</h2>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">Filter by activity or status here. (Implementation pending backend connection)</p>
+            
+            <div class="lead-archive-container">
+                <table id="leadArchiveTable" style="margin-top: 1rem;">
+                    <thead>
+                        <tr>
+                            <th>Lead ID</th>
+                            <th>Subscribed</th>
+                            <th>Scans Used</th>
+                            <th>Last Active</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="5" style="text-align: center;">Full Lead List loads here once connected to the backend.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+
+        <h2 style="margin-top: 2rem;">Recent App Activity</h2>
+        <table>
             <thead>
                 <tr>
+                    <th>Timestamp</th>
                     <th>Lead ID</th>
-                    <th>Subscribed</th>
-                    <th>Scans Used</th>
-                    <th>Last Active</th>
+                    <th>Activity Type</th>
                     <th>Status</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr><td colspan="5" style="text-align: center;">Full Lead List loads here once connected to the backend.</td></tr>
-            </tbody>
+            <tbody id="activityTableBody">
+                </tbody>
         </table>
-    </div> 
     </div>
-    <h2>Recent App Activity</h2> 
-    <table>
-        <tbody id="activityTableBody">
-            </tbody>
-    </table>
-</div>
-             
-                <div class="sidebar-card">
-                    <h2>Push Notification Composer</h2>
-                    <p id="subscriberCountText" style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem;">Target: 0 Active Subscribers</p>
-                    <div class="input-group">
-    <label for="targetFilter">Audience Segment</label>
-    <select id="targetFilter" class="input-select" style="width: 100%; padding: 0.6rem; border-radius: 4px; background: #4b5563; color: var(--text-primary);">
-        <option value="AllActive">All Active Subscribers</option>
-        <option value="HighActivity">High Activity Leads (Scans > 5)</option>
-        <option value="FirstActivation">New Leads (First 7 Days)</option>
-        </select>
-</div>
 
-                    <div class="input-group">
-                        <label for="pushTitle">Notification Title</label>
-                        <input type="text" id="pushTitle" placeholder="e.g., New Spindle Catalog Released!">
-                    </div>
+    <div class="sidebar-card">
+        <h2>Push Notification Composer</h2>
+        <p id="subscriberCountText" style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem;">Target: 0 Active Subscribers</p>
 
-                    <div class="input-group">
-                        <label for="pushBody">Message Body</label>
-                        <textarea id="pushBody" placeholder="e.g., Get exclusive Q1 performance data—download the PDF today."></textarea>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="pushURL">Target URL (Link)</label>
-                        <input type="text" id="pushURL" placeholder="https://yourcompany.com/offer">
-                    </div>
-
-                    <button class="btn-primary" id="sendPushBtn" onclick="sendPushNotification()">Send Notification Now</button>
-                </div>
-
-            </div>
+        <div class="input-group">
+            <label for="targetFilter">Audience Segment</label>
+            <select id="targetFilter" class="input-select" style="width: 100%; padding: 0.6rem; border-radius: 4px; background: #4b5563; color: var(--text-primary);">
+                <option value="AllActive">All Active Subscribers</option>
+                <option value="HighActivity">High Activity Leads (Scans > 5)</option>
+                <option value="FirstActivation">New Leads (First 7 Days)</option>
+            </select>
         </div>
+
+        <div class="input-group">
+            <label for="pushTitle">Notification Title</label>
+            <input type="text" id="pushTitle" placeholder="e.g., New Spindle Catalog Released!">
+        </div>
+
+        <div class="input-group">
+            <label for="pushBody">Message Body</label>
+            <textarea id="pushBody" placeholder="e.g., Get exclusive Q1 performance data—download the PDF today."></textarea>
+        </div>
+        
+        <div class="input-group">
+            <label for="pushURL">Target URL (Link)</label>
+            <input type="text" id="pushURL" placeholder="https://yourcompany.com/offer">
+        </div>
+
+        <button class="btn-primary" id="sendPushBtn" onclick="sendPushNotification()">Send Notification Now</button>
+    </div>
     </div>
 
     <script>
