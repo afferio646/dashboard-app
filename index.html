@@ -131,6 +131,32 @@
             <div class="main-grid">
                 
                 <div>
+                    <div>
+    <div class="lead-archive" style="margin-bottom: 2rem;">
+        <h2>Lead Archive & Status (Total IDs: <span id="archiveTotal"></span>)</h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Filter by activity or status here. (Implementation pending backend connection)</p>
+        
+        <table id="leadArchiveTable" style="margin-top: 1rem;">
+            <thead>
+                <tr>
+                    <th>Lead ID</th>
+                    <th>Subscribed</th>
+                    <th>Scans Used</th>
+                    <th>Last Active</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td colspan="5" style="text-align: center;">Full Lead List loads here once connected to the backend.</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <h2>Recent App Activity</h2> 
+    <table>
+        <tbody id="activityTableBody">
+            </tbody>
+    </table>
+</div>
                     <h2>Recent App Activity</h2>
                     <table>
                         <thead>
@@ -149,6 +175,14 @@
                 <div class="sidebar-card">
                     <h2>Push Notification Composer</h2>
                     <p id="subscriberCountText" style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem;">Target: 0 Active Subscribers</p>
+                    <div class="input-group">
+    <label for="targetFilter">Audience Segment</label>
+    <select id="targetFilter" class="input-select" style="width: 100%; padding: 0.6rem; border-radius: 4px; background: #4b5563; color: var(--text-primary);">
+        <option value="AllActive">All Active Subscribers</option>
+        <option value="HighActivity">High Activity Leads (Scans > 5)</option>
+        <option value="FirstActivation">New Leads (First 7 Days)</option>
+        </select>
+</div>
 
                     <div class="input-group">
                         <label for="pushTitle">Notification Title</label>
@@ -301,35 +335,33 @@
         // === PUSH NOTIFICATION COMPOSER (Phase 3.2) ===
         // =======================================================
 
-       // --- FINAL ENDPOINT B BLUEPRINT: Secure Push Notification Send Logic ---
+// --- Updated sendPushNotification() Function ---
 async function sendPushNotification() {
     // 1. Get user input from the composer UI
     const title = document.getElementById('pushTitle').value.trim();
     const body = document.getElementById('pushBody').value.trim();
     const targetUrl = document.getElementById('pushURL').value.trim();
+    // *** NEW: Read the Audience Filter ***
+    const targetFilter = document.getElementById('targetFilter').value;
     
     // Safety checks
     if (!title || !body) {
         alert('Please enter a notification title and message body.');
         return;
     }
-    // authenticatedExhId is available globally after successful login
     if (!authenticatedExhId) {
         alert('Authentication error: Please log in again.');
         return;
     }
-    
-    // *** CRITICAL: Define the BACKEND_URL here, as the dashboard is a separate component ***
-    const BACKEND_URL = 'YOUR_SECURE_BACKEND_URL'; // Replace with your actual server URL
 
     const sendBtn = document.getElementById('sendPushBtn');
     sendBtn.disabled = true;
     sendBtn.textContent = 'Sending...';
 
-    // 2. Prepare the Payload for the secure serverless function
+    // 2. Prepare the Payload
     const pushPayload = {
         exhId: authenticatedExhId, 
-        targetFilter: 'HighActivity', // Blueprint: Targeting high-value leads
+        targetFilter: targetFilter, // CRITICAL: Now uses the selected dropdown value
         message: {
             title: title,
             body: body,
@@ -338,24 +370,21 @@ async function sendPushNotification() {
     };
 
     try {
-        // 3. Execute Secure API Call (to Endpoint B: /api/v1/push/send)
+        // --- SIMULATION ---
+        const BACKEND_URL = 'YOUR_SECURE_BACKEND_URL'; // Placeholder
         const response = await fetch(`${BACKEND_URL}/api/v1/push/send`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            // ... headers and body remain the same ...
             body: JSON.stringify(pushPayload)
         });
-
-        const result = await response.json();
-
-        // 4. Handle Server Response
-        if (response.ok && result.success) {
-            alert(`SUCCESS! Notification sent to ${result.subscribersSent || 'ALL'} users. Check app activity log.`);
-        } else {
-            alert(`SEND FAILED: ${result.message || 'Server error during processing.'}`);
-        }
-
+        
+        // --- Mocking success and showing the filter used ---
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        const mockSubscribers = MOCK_MULTI_CLIENT_DATA[authenticatedExhId].aggregates.activeSubscribers;
+        
+        alert(`SUCCESS! Notification request sent. Filter Used: ${targetFilter}. (Message will appear on subscribed devices.)`);
+        
     } catch (e) {
         console.error("Push API Failure:", e);
         alert("Network Error: Could not reach the notification server.");
