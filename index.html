@@ -301,33 +301,70 @@
         // === PUSH NOTIFICATION COMPOSER (Phase 3.2) ===
         // =======================================================
 
-        async function sendPushNotification() {
-            const title = document.getElementById('pushTitle').value;
-            const body = document.getElementById('pushBody').value;
-            const targetUrl = document.getElementById('pushURL').value;
-            
-            if (!title || !body) {
-                alert('Please enter a title and message body.');
-                return;
-            }
+       // --- FINAL ENDPOINT B BLUEPRINT: Secure Push Notification Send Logic ---
+async function sendPushNotification() {
+    // 1. Get user input from the composer UI
+    const title = document.getElementById('pushTitle').value.trim();
+    const body = document.getElementById('pushBody').value.trim();
+    const targetUrl = document.getElementById('pushURL').value.trim();
+    
+    // Safety checks
+    if (!title || !body) {
+        alert('Please enter a notification title and message body.');
+        return;
+    }
+    // authenticatedExhId is available globally after successful login
+    if (!authenticatedExhId) {
+        alert('Authentication error: Please log in again.');
+        return;
+    }
+    
+    // *** CRITICAL: Define the BACKEND_URL here, as the dashboard is a separate component ***
+    const BACKEND_URL = 'YOUR_SECURE_BACKEND_URL'; // Replace with your actual server URL
 
-            const sendBtn = document.getElementById('sendPushBtn');
-            sendBtn.disabled = true;
-            sendBtn.textContent = 'Sending...';
+    const sendBtn = document.getElementById('sendPushBtn');
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending...';
 
-            // SIMULATION: Call the secure serverless function
-            console.log(`[Server Sim] Sending request to push service for ${authenticatedExhId}...`);
-            console.log(`Payload: Title='${title}', Body='${body}'`);
-            
-            // In a real app, this secure fetch() call triggers the server to query push tokens 
-            // and send the message via the Web-Push protocol (using the sw.js logic).
-
-            await new Promise(resolve => setTimeout(resolve, 3000)); // Simulate sending time
-
-            sendBtn.disabled = false;
-            sendBtn.textContent = 'Send Notification Now';
-            alert(`Successfully simulated sending notification to ${MOCK_MULTI_CLIENT_DATA[authenticatedExhId].aggregates.activeSubscribers} active subscribers! (Message will appear on subscribed devices.)`);
+    // 2. Prepare the Payload for the secure serverless function
+    const pushPayload = {
+        exhId: authenticatedExhId, 
+        targetFilter: 'HighActivity', // Blueprint: Targeting high-value leads
+        message: {
+            title: title,
+            body: body,
+            link: targetUrl || 'https://structuralscan-app.vercel.app/'
         }
+    };
+
+    try {
+        // 3. Execute Secure API Call (to Endpoint B: /api/v1/push/send)
+        const response = await fetch(`${BACKEND_URL}/api/v1/push/send`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(pushPayload)
+        });
+
+        const result = await response.json();
+
+        // 4. Handle Server Response
+        if (response.ok && result.success) {
+            alert(`SUCCESS! Notification sent to ${result.subscribersSent || 'ALL'} users. Check app activity log.`);
+        } else {
+            alert(`SEND FAILED: ${result.message || 'Server error during processing.'}`);
+        }
+
+    } catch (e) {
+        console.error("Push API Failure:", e);
+        alert("Network Error: Could not reach the notification server.");
+    } finally {
+        // 5. Reset UI
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send Notification Now';
+    }
+}
 
         // =======================================================
         // --- Initialization ---
